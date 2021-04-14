@@ -1,5 +1,5 @@
-use std::collections::BTreeMap;
 use std::borrow::Cow;
+use std::collections::BTreeMap;
 #[derive(Debug)]
 /// Measurement's field value.
 pub enum Value<'a> {
@@ -10,7 +10,7 @@ pub enum Value<'a> {
     /// Integer number.
     Integer(i64),
     /// Boolean value.
-    Boolean(bool)
+    Boolean(bool),
 }
 
 /// Measurement model.
@@ -25,7 +25,7 @@ pub struct Measurement<'a> {
     /// Map of fields.
     pub fields: BTreeMap<Cow<'a, str>, Value<'a>>,
     /// Map of tags.
-    pub tags: BTreeMap<Cow<'a,str>, Cow<'a,str>>
+    pub tags: BTreeMap<Cow<'a, str>, Cow<'a, str>>,
 }
 
 impl<'a> Measurement<'a> {
@@ -43,7 +43,7 @@ impl<'a> Measurement<'a> {
             key,
             timestamp: None,
             fields: BTreeMap::new(),
-            tags: BTreeMap::new()
+            tags: BTreeMap::new(),
         }
     }
 
@@ -58,7 +58,10 @@ impl<'a> Measurement<'a> {
     ///
     /// measurement.add_field("field", Value::String("hello"));
     /// ```
-    pub fn add_field<T>(&mut self, field: T, value: Value<'a>) where T: Into<Cow<'a, str>> {
+    pub fn add_field<T>(&mut self, field: T, value: Value<'a>)
+    where
+        T: Into<Cow<'a, str>>,
+    {
         self.fields.insert(field.into(), value);
     }
 
@@ -73,7 +76,11 @@ impl<'a> Measurement<'a> {
     ///
     /// measurement.add_tag("tag", "value");
     /// ```
-    pub fn add_tag<I, K>(&mut self, tag: I, value: K) where I: Into<Cow<'a,str>>, K: Into<Cow<'a, str>> {
+    pub fn add_tag<I, K>(&mut self, tag: I, value: K)
+    where
+        I: Into<Cow<'a, str>>,
+        K: Into<Cow<'a, str>>,
+    {
         self.tags.insert(tag.into(), value.into());
     }
 

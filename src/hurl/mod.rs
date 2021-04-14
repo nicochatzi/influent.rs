@@ -14,13 +14,13 @@ pub struct Request<'a> {
     pub method: Method,
     pub auth: Option<Auth<'a>>,
     pub query: Option<HashMap<&'a str, String>>,
-    pub body: Option<String>
+    pub body: Option<String>,
 }
 
 #[derive(Debug)]
 pub struct Response {
     pub status: u16,
-    pub body: String
+    pub body: String,
 }
 
 impl ToString for Response {
@@ -32,11 +32,11 @@ impl ToString for Response {
 #[derive(Debug)]
 pub enum Method {
     POST,
-    GET
+    GET,
 }
 
 #[derive(Debug)]
 pub struct Auth<'a> {
     pub username: &'a str,
-    pub password: &'a str
+    pub password: &'a str,
 }

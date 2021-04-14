@@ -1,20 +1,32 @@
-use async_trait::async_trait;
 use crate::measurement::Measurement;
+use async_trait::async_trait;
 use std::io;
 
 pub mod http;
 
 #[async_trait]
 pub trait Client {
-    async fn write_many(&self, line: &[Measurement<'_>], precision: Option<Precision>) -> Result<(), ClientError>;
-    async fn write_one(&self, line: Measurement<'_>, precision: Option<Precision>) -> Result<(), ClientError>;
-    async fn query(&self, query: String, precision: Option<Precision>) -> Result<String, ClientError>;
+    async fn write_many(
+        &self,
+        line: &[Measurement<'_>],
+        precision: Option<Precision>,
+    ) -> Result<(), ClientError>;
+    async fn write_one(
+        &self,
+        line: Measurement<'_>,
+        precision: Option<Precision>,
+    ) -> Result<(), ClientError>;
+    async fn query(
+        &self,
+        query: String,
+        precision: Option<Precision>,
+    ) -> Result<String, ClientError>;
 }
 
 pub struct Credentials<'a> {
     pub username: &'a str,
     pub password: &'a str,
-    pub database: &'a str
+    pub database: &'a str,
 }
 
 pub enum Precision {
@@ -23,18 +35,18 @@ pub enum Precision {
     Milliseconds,
     Seconds,
     Minutes,
-    Hours
+    Hours,
 }
 
 impl ToString for Precision {
     fn to_string(&self) -> String {
         let s = match *self {
-            Precision::Nanoseconds  => "n",
+            Precision::Nanoseconds => "n",
             Precision::Microseconds => "u",
             Precision::Milliseconds => "ms",
-            Precision::Seconds      => "s",
-            Precision::Minutes      => "m",
-            Precision::Hours        => "h"
+            Precision::Seconds => "s",
+            Precision::Minutes => "m",
+            Precision::Hours => "h",
         };
 
         s.to_string()
@@ -47,7 +59,7 @@ pub enum ClientError {
     Communication(String),
     Syntax(String),
     Unexpected(String),
-    Unknown
+    Unknown,
 }
 
 impl From<io::Error> for ClientError {

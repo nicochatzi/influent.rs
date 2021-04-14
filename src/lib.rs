@@ -1,10 +1,10 @@
 pub mod client;
 pub mod hurl;
-pub mod serializer;
 pub mod measurement;
+pub mod serializer;
 
-use client::Credentials;
 use client::http::HttpClient;
+use client::Credentials;
 use hurl::reqwest::ReqwestHurl;
 use serializer::line::LineSerializer;
 
@@ -28,7 +28,11 @@ use serializer::line::LineSerializer;
 /// let client = create_client(credentials, vec!["http://localhost:8086"]);
 /// ```
 pub fn create_client<'a>(credentials: Credentials<'a>, hosts: Vec<&'a str>) -> HttpClient<'a> {
-    let mut client = HttpClient::new(credentials, Box::new(LineSerializer::new()), Box::new(ReqwestHurl::new()));
+    let mut client = HttpClient::new(
+        credentials,
+        Box::new(LineSerializer::new()),
+        Box::new(ReqwestHurl::new()),
+    );
 
     for host in hosts {
         client.add_host(host);
@@ -36,4 +40,3 @@ pub fn create_client<'a>(credentials: Credentials<'a>, hosts: Vec<&'a str>) -> H
 
     client
 }
-

@@ -29,9 +29,7 @@ impl LineSerializer {
 }
 
 fn escape(s: &str) -> String {
-    s
-        .replace(" ", "\\ ")
-        .replace(",", "\\,")
+    s.replace(" ", "\\ ").replace(",", "\\,")
 }
 
 fn as_string(s: &str) -> String {
@@ -47,7 +45,11 @@ fn as_float(f: f64) -> String {
 }
 
 fn as_boolean(b: bool) -> String {
-    if b { "t".to_string() } else { "f".to_string() }
+    if b {
+        "t".to_string()
+    } else {
+        "f".to_string()
+    }
 }
 
 impl Serializer for LineSerializer {
@@ -64,21 +66,31 @@ impl Serializer for LineSerializer {
         let mut was_spaced = false;
 
         for (field, value) in &measurement.fields {
-            line.push({if !was_spaced { was_spaced = true; " " } else { "," }}.to_string());
+            line.push(
+                {
+                    if !was_spaced {
+                        was_spaced = true;
+                        " "
+                    } else {
+                        ","
+                    }
+                }
+                .to_string(),
+            );
             line.push(escape(field));
             line.push("=".to_string());
 
             match *value {
-                Value::String(s)  => line.push(as_string(s)),
+                Value::String(s) => line.push(as_string(s)),
                 Value::Integer(i) => line.push(as_integer(i)),
-                Value::Float(f)   => line.push(as_float(f)),
-                Value::Boolean(b) => line.push(as_boolean(b))
+                Value::Float(f) => line.push(as_float(f)),
+                Value::Boolean(b) => line.push(as_boolean(b)),
             };
         }
 
         if let Some(t) = measurement.timestamp {
-                line.push(" ".to_string());
-                line.push(t.to_string());
+            line.push(" ".to_string());
+            line.push(t.to_string());
         }
 
         line.join("")
@@ -87,9 +99,9 @@ impl Serializer for LineSerializer {
 
 #[cfg(test)]
 mod tests {
-    use super::{as_boolean, as_string, as_integer, as_float, escape, LineSerializer};
-    use crate::serializer::Serializer;
+    use super::{as_boolean, as_float, as_integer, as_string, escape, LineSerializer};
     use crate::measurement::{Measurement, Value};
+    use crate::serializer::Serializer;
 
     #[test]
     fn test_as_boolean() {
@@ -104,10 +116,10 @@ mod tests {
 
     #[test]
     fn test_as_integer() {
-        assert_eq!("1i",    as_integer(1i64));
-        assert_eq!("345i",  as_integer(345i64));
+        assert_eq!("1i", as_integer(1i64));
+        assert_eq!("345i", as_integer(345i64));
         assert_eq!("2015i", as_integer(2015i64));
-        assert_eq!("-10i",  as_integer(-10i64));
+        assert_eq!("-10i", as_integer(-10i64));
     }
 
     #[test]
@@ -140,7 +152,6 @@ mod tests {
         measurement.add_field("one, two", Value::String("three"));
         measurement.add_tag("one ,two", "three, four");
 
-
         measurement.set_timestamp(10);
 
         assert_eq!("key,one\\ \\,two=three\\,\\ four,tag=value b=f,f=10,i=10i,one\\,\\ two=\"three\",s=\"string\" 10", serializer.serialize(&measurement));
@@ -155,10 +166,9 @@ mod tests {
 
         measurement.set_timestamp(1434055562000000000);
 
-        assert_eq!("key s=\"string\" 1434055562000000000", serializer.serialize(&measurement));
+        assert_eq!(
+            "key s=\"string\" 1434055562000000000",
+            serializer.serialize(&measurement)
+        );
     }
 }
-
-
-
-

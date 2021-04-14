@@ -3,7 +3,7 @@ use reqwest::Client as ReqwestClient;
 use reqwest::Method as ReqwestMethod;
 use url::Url;
 
-use super::{Request, Response, Method};
+use super::{Method, Request, Response};
 
 use super::Hurl;
 
@@ -24,16 +24,18 @@ impl Hurl for ReqwestHurl {
         // map request method to the hyper's
         let method = match req.method {
             Method::POST => ReqwestMethod::POST,
-            Method::GET  => ReqwestMethod::GET,
+            Method::GET => ReqwestMethod::GET,
         };
 
-        let mut url = Url::parse(req.url)
-            .map_err(|e| format!("could not parse url: {:?}", e))?;
+        let mut url = Url::parse(req.url).map_err(|e| format!("could not parse url: {:?}", e))?;
 
         // if request has query
         if let Some(ref query) = req.query {
             // if any existing pairs
-            let existing: Vec<(String, String)> = url.query_pairs().map(|(a,b)| (a.to_string(), b.to_string())).collect();
+            let existing: Vec<(String, String)> = url
+                .query_pairs()
+                .map(|(a, b)| (a.to_string(), b.to_string()))
+                .collect();
 
             // final pairs
             let mut pairs: Vec<(&str, &str)> = Vec::new();
@@ -49,9 +51,9 @@ impl Hurl for ReqwestHurl {
             }
 
             // set new pairs
-            url.query_pairs_mut().clear().extend_pairs(
-                pairs.iter().map(|&(k, v)| { (&k[..], &v[..]) })
-            );
+            url.query_pairs_mut()
+                .clear()
+                .extend_pairs(pairs.iter().map(|&(k, v)| (&k[..], &v[..])));
         }
 
         // create query
@@ -66,11 +68,9 @@ impl Hurl for ReqwestHurl {
 
         let request = builder.build().unwrap();
 
-        let resp = client.execute(request).await
-            .map_err(|e| e.to_string())?;
+        let resp = client.execute(request).await.map_err(|e| e.to_string())?;
         let status = resp.status().as_u16();
-        let body = resp.text().await
-            .map_err(|e| e.to_string())?;
+        let body = resp.text().await.map_err(|e| e.to_string())?;
 
         Ok(Response { status, body })
     }
