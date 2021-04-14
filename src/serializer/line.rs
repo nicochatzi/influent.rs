@@ -140,19 +140,15 @@ mod tests {
     #[test]
     fn test_line_serializer() {
         let serializer = LineSerializer::new();
-        let mut measurement = Measurement::new("key");
-
-        measurement.add_field("s", Value::String("string"));
-        measurement.add_field("i", Value::Integer(10));
-        measurement.add_field("f", Value::Float(10f64));
-        measurement.add_field("b", Value::Boolean(false));
-
-        measurement.add_tag("tag", "value");
-
-        measurement.add_field("one, two", Value::String("three"));
-        measurement.add_tag("one ,two", "three, four");
-
-        measurement.set_timestamp(10);
+        let measurement = Measurement::new("key")
+            .field("s", Value::String("string"))
+            .field("i", Value::Integer(10))
+            .field("f", Value::Float(10f64))
+            .field("b", Value::Boolean(false))
+            .tag("tag", "value")
+            .field("one, two", Value::String("three"))
+            .tag("one ,two", "three, four")
+            .timestamp(10);
 
         assert_eq!("key,one\\ \\,two=three\\,\\ four,tag=value b=f,f=10,i=10i,one\\,\\ two=\"three\",s=\"string\" 10", serializer.serialize(&measurement));
     }
@@ -160,11 +156,9 @@ mod tests {
     #[test]
     fn test_line_serializer_long_timestamp() {
         let serializer = LineSerializer::new();
-        let mut measurement = Measurement::new("key");
-
-        measurement.add_field("s", Value::String("string"));
-
-        measurement.set_timestamp(1434055562000000000);
+        let measurement = Measurement::new("key")
+            .field("s", Value::String("string"))
+            .timestamp(1434055562000000000);
 
         assert_eq!(
             "key s=\"string\" 1434055562000000000",

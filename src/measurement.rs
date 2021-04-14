@@ -54,15 +54,15 @@ impl<'a> Measurement<'a> {
     /// ```
     /// use influent::measurement::{Measurement, Value};
     ///
-    /// let mut measurement = Measurement::new("key");
-    ///
-    /// measurement.add_field("field", Value::String("hello"));
+    /// let measurement = Measurement::new("key")
+    ///     .field("field", Value::String("hello"));
     /// ```
-    pub fn add_field<T>(&mut self, field: T, value: Value<'a>)
+    pub fn field<T>(mut self, field: T, value: Value<'a>) -> Self
     where
         T: Into<Cow<'a, str>>,
     {
         self.fields.insert(field.into(), value);
+        self
     }
 
     /// Adds tag to the measurement.
@@ -72,16 +72,16 @@ impl<'a> Measurement<'a> {
     /// ```
     /// use influent::measurement::{Measurement, Value};
     ///
-    /// let mut measurement = Measurement::new("key");
-    ///
-    /// measurement.add_tag("tag", "value");
+    /// let measurement = Measurement::new("key")
+    ///     .tag("tag", "value");
     /// ```
-    pub fn add_tag<I, K>(&mut self, tag: I, value: K)
+    pub fn tag<I, K>(mut self, tag: I, value: K) -> Self
     where
         I: Into<Cow<'a, str>>,
         K: Into<Cow<'a, str>>,
     {
         self.tags.insert(tag.into(), value.into());
+        self
     }
 
     /// Sets the timestamp of the measurement. It should be unix timestamp in nanosecond
@@ -91,11 +91,11 @@ impl<'a> Measurement<'a> {
     /// ```
     /// use influent::measurement::{Measurement, Value};
     ///
-    /// let mut measurement = Measurement::new("key");
-    ///
-    /// measurement.set_timestamp(1434055562000000000)
+    /// let measurement = Measurement::new("key")
+    ///     .timestamp(1434055562000000000)
     /// ```
-    pub fn set_timestamp(&mut self, timestamp: i64) {
+    pub fn timestamp(mut self, timestamp: i64) -> Self {
         self.timestamp = Some(timestamp);
+        self
     }
 }

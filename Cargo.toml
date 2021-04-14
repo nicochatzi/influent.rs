@@ -3,8 +3,7 @@ name = "influent"
 version = "0.6.0"
 authors = [
     "gobwas <gobwas@gmail.com>",
-    "Bastien Orivel <eijebong@bananium.fr>",
-    "niochatzi <nicolas.chatzi@gmail.com>"
+    "Bastien Orivel <eijebong@bananium.fr>"
 ]
 edition = "2018"
 
