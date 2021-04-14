@@ -1,20 +1,49 @@
 use async_trait::async_trait;
 use reqwest::Client as ReqwestClient;
 use reqwest::Method as ReqwestMethod;
+use std::collections::HashMap;
 use url::Url;
 
-use super::{Method, Request, Response};
+#[async_trait]
+pub trait Hurl {
+    async fn request(&self, req: Request<'_>) -> Result<Response, String>;
+}
 
-use super::Hurl;
+#[derive(Debug)]
+pub struct Request<'a> {
+    pub url: &'a str,
+    pub method: Method,
+    pub auth: Option<Auth<'a>>,
+    pub query: Option<HashMap<&'a str, String>>,
+    pub body: Option<String>,
+}
+
+#[derive(Debug, Clone)]
+pub struct Response {
+    pub status: u16,
+    pub body: String,
+}
+
+impl ToString for Response {
+    fn to_string(&self) -> String {
+        self.body.clone()
+    }
+}
+
+#[derive(Debug)]
+pub enum Method {
+    POST,
+    GET,
+}
+
+#[derive(Debug)]
+pub struct Auth<'a> {
+    pub username: &'a str,
+    pub password: &'a str,
+}
 
 #[derive(Default)]
 pub struct ReqwestHurl;
-
-impl ReqwestHurl {
-    pub fn new() -> ReqwestHurl {
-        ReqwestHurl::default()
-    }
-}
 
 #[async_trait]
 impl Hurl for ReqwestHurl {

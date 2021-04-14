@@ -1,21 +1,21 @@
-use influent::client::http::HttpClient;
-use influent::client::{Client, Credentials};
-use influent::create_client;
-use influent::measurement::{Measurement, Value};
+use influent::client::{Client, Credentials, InfluxClient};
+use influent::point::{Measurement, Value};
 use std::sync::Arc;
 
-async fn before<'a>() -> HttpClient<'a> {
+async fn before<'a>() -> InfluxClient<'a> {
     let credentials = Credentials {
         username: "gobwas",
         password: "xxxx",
         database: "test",
     };
 
-    let client = Arc::new(create_client(credentials, vec!["http://localhost:8086"]));
+    let client = Arc::new(InfluxClient::new(credentials, "http://localhost:8086"));
+
     client
         .query("drop database test".to_owned(), None)
         .await
         .expect("failed to drop");
+
     client
         .query("create database test".to_owned(), None)
         .await
@@ -47,18 +47,20 @@ async fn test_write_measurement() {
         .await
         .expect("failed to write one");
 
-    match client.query("select * from \"sut\"".to_owned(), None).await {
-        Ok(res) => {
-            // Response from InfluxDB 1.7.9
-            let fixture = concat!(
-                r#"{"results":[{"statement_id":0,"series":[{"name":"sut","columns""#,
-                r#":["time","boolean","float","integer","string","tag","tag, with "#,
-                r#"comma","with, comma"],"values":[["2015-06-11T20:46:02Z",false,1"#,
-                r#"0,10,"string","value","three, four","comma, with"]]}]}]}"#,
-                "\n"
-            );
-            assert_eq!(fixture, res);
-        }
-        Err(e) => panic!("{:?}", e),
-    };
+    let res = client
+        .query("select * from \"sut\"".to_owned(), None)
+        .await
+        .unwrap();
+
+    // Response from InfluxDB 1.7.9
+    assert_eq!(
+        concat!(
+            r#"{"results":[{"statement_id":0,"series":[{"name":"sut","columns""#,
+            r#":["time","boolean","float","integer","string","tag","tag, with "#,
+            r#"comma","with, comma"],"values":[["2015-06-11T20:46:02Z",false,1"#,
+            r#"0,10,"string","value","three, four","comma, with"]]}]}]}"#,
+            "\n"
+        ),
+        res
+    );
 }
