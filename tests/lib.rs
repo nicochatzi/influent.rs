@@ -1,7 +1,3 @@
-extern crate futures;
-extern crate influent;
-extern crate tokio;
-
 use influent::client::http::HttpClient;
 use influent::client::{Client, Credentials};
 use influent::create_client;
@@ -50,6 +46,7 @@ async fn test_write_measurement() {
         .write_one(measurement, None)
         .await
         .expect("failed to write one");
+
     match client.query("select * from \"sut\"".to_owned(), None).await {
         Ok(res) => {
             // Response from InfluxDB 1.7.9
