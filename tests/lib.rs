@@ -28,6 +28,7 @@ async fn before<'a>() -> HttpClient<'a> {
     if let Ok(client) = Arc::try_unwrap(client) {
         return client;
     }
+
     unreachable!()
 }
 

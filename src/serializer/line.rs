@@ -16,10 +16,9 @@ impl LineSerializer {
     /// use influent::measurement::{Measurement, Value};
     ///
     /// let serializer = LineSerializer::new();
-    /// let mut measurement = Measurement::new("key");
-    ///
-    /// measurement.add_field("field", Value::String("value"));
-    /// measurement.add_tag("tag", "value");
+    /// let measurement = Measurement::new("key")
+    ///     .field("field", Value::String("value"))
+    ///     .tag("tag", "value");
     ///
     /// assert_eq!("key,tag=value field=\"value\"", serializer.serialize(&measurement));
     /// ```
