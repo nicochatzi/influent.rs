@@ -144,6 +144,6 @@ mod test {
 
         let measurement = Measurement::new("").now();
 
-        assert!(earlier < measurement.timestamp.unwrap())
+        assert!(earlier <= measurement.timestamp.unwrap())
     }
 }

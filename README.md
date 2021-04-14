@@ -27,25 +27,22 @@ influent = "0.6"
 ## Usage
 
 ```rust
-extern crate influent;
-
 use influent::create_client;
 use influent::client::{Client, Credentials};
 use influent::measurement::{Measurement, Value};
 
 // prepare client
-let credentials = Credentials {
-    username: "gobwas",
-    password: "xxx",
-    database: "mydb"
-};
-let hosts = vec!["http://localhost:8086"];
-let client = create_client(credentials, hosts);
+let client = create_client(Credentials {
+        username: "gobwas",
+        password: "xxx",
+        database: "mydb"
+    }, vec!["http://localhost:8086"]
+);
 
 // prepare measurement
-let mut measurement = Measurement::new("key");
-measurement.add_field("some_field", Value::String("hello"));
-measurement.add_tag("some_region", "Moscow");
+let measurement = Measurement::new("key")
+    .field("some_field", Value::String("hello"))
+    .tag("some_region", "Moscow");
 
 client.write_one(measurement, None);
 ```

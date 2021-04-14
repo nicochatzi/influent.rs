@@ -33,10 +33,9 @@ pub fn create_client<'a>(credentials: Credentials<'a>, hosts: Vec<&'a str>) -> H
         Box::new(LineSerializer::new()),
         Box::new(ReqwestHurl::new()),
     );
-
-    for host in hosts {
-        client.add_host(host);
-    }
-
+    client.add_hosts(hosts);
     client
 }
+
+#[cfg(doctest)]
+doc_comment::doctest!("../README.md");

@@ -1,10 +1,7 @@
 [package]
 name = "influent"
 version = "0.6.0"
-authors = [
-    "gobwas <gobwas@gmail.com>",
-    "Bastien Orivel <eijebong@bananium.fr>"
-]
+authors = ["gobwas <gobwas@gmail.com>", "Bastien Orivel <eijebong@bananium.fr>"]
 edition = "2018"
 
 description = "InfluxDB Rust driver"
@@ -22,6 +19,7 @@ url = "2.2.1"
 
 [dev-dependencies]
 tokio = { version = "1.5.0", features = ["rt-multi-thread", "macros"] }
+doc-comment = "0.3.3"
 
 [badges]
 travis-ci = { repository = "gobwas/influent.rs", branch = "master" }

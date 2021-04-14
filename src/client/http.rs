@@ -48,6 +48,10 @@ impl<'a> HttpClient<'a> {
         self.hosts.push(host);
     }
 
+    pub fn add_hosts(&mut self, hosts: Vec<&'a str>) {
+        self.hosts.extend(hosts);
+    }
+
     fn get_host(&self) -> &'a str {
         match self.hosts.first() {
             Some(host) => host,
@@ -168,8 +172,7 @@ impl<'a> Client for HttpClient<'a> {
 #[cfg(test)]
 mod tests {
     use super::HttpClient;
-    use crate::client::Client;
-    use crate::client::{Credentials, Precision};
+    use crate::client::{Client, Credentials, Precision};
     use crate::hurl::{Hurl, Request, Response};
     use crate::measurement::Measurement;
     use crate::serializer::Serializer;
